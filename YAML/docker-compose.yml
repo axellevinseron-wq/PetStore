@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  # Servicio Frontend
+  frontend:
+    image: ${DOCKERHUB_USERNAME}/petstore-frontend:latest
+    ports:
+      - "3000:3000"
+    restart: always
+    depends_on:
+      - backend
+
+  # Servicio Backend
+  backend:
+    image: ${DOCKERHUB_USERNAME}/petstore-backend:latest
+    ports:
+      - "3001:3001"
+    restart: always
+    depends_on:
+      - db
+
+  # Servicio de Base de Datos (MySQL)
+  db:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: petstore_db
+    restart: always

@@ -1,0 +1,31 @@
+name: CI/CD Pipeline PetStore
+
+# El pipeline se dispara al hacer push en la rama main
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Descarga el código del repositorio al corredor de GitHub
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      # 2. Se autentica en Docker Hub usando tus secretos (DOCKERHUB_USERNAME y DOCKERHUB_TOKEN)
+      - name: Login en Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # 3. Construye la imagen basada en tu Dockerfile y la sube a tu perfil de Docker Hub
+      - name: Construir y subir imagen
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          # Usa tu usuario de Docker Hub dinámicamente
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/petstore:latest
